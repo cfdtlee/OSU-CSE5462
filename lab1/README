@@ -1,0 +1,9 @@
+## Lab 1
+This program reads a text file and print the following statistics on the screen as
+well to an output file:
+- the size of the file in bytes
+- number of times the search-string specified in the second argument appeared in the file
+
+In order to run this program, you need to type `make` to compile this program
+and then use using the following command: 
+`./count <input-filename> <search-string> <output-filename>` to run the program.
