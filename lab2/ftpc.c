@@ -45,6 +45,7 @@ main(int argc, char *argv[]) {
 	bzero(filename, FILE_NAME_SIZE);
 	strncpy(filename, argv[3],strlen(argv[3]) > FILE_NAME_SIZE ?FILE_NAME_SIZE : strlen(argv[3]));
 
+
 	//read file
 	FILE *file = fopen(filename, "rb");
 	if (file == NULL) {
@@ -62,7 +63,18 @@ main(int argc, char *argv[]) {
 	bzero(buf, BUFFSIZE);
 	//set the file size and file name to the buffer
 	strncpy(buf, (char*) &size, FILE_BYTES_SIZE);
-	strncpy(buf + FILE_BYTES_SIZE, filename, strlen(filename));
+	int t = 0;
+
+	for(t = strlen(filename)-1; t >= 0; t--) 
+	{
+		if(filename[t] == '/')
+		{
+			break;
+		}
+	}
+	char filename_1[40];
+	strcpy(filename_1, filename+t+1); //get real filename store in filename_1
+	strncpy(buf + FILE_BYTES_SIZE, filename_1, strlen(filename_1));
 	count = send(sock, buf, BUFFSIZE, 0);
 	if (count < 0) {
 		perror("Send file information");

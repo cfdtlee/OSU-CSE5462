@@ -51,7 +51,8 @@ main(int argc, char*argv[]) {
 	int size;
 	bzero(buf, BUFFSIZE);
 
-	count = recv(msgsock, buf, BUFFSIZE, 0);
+	count = recv(msgsock, buf, BUFFSIZE, MSG_WAITALL);
+	// count = read()
 	if (count < 0) {
 		perror("recv");
 		exit(1);
@@ -102,7 +103,7 @@ main(int argc, char*argv[]) {
 	printf("Receieved file %s finished!\n", filename);	
 
 	/* write message back to client */
-	char buf2[20] = "Transfer file finished!\n";
+	char buf2[40] = "Transfer file finished!\n";
 	if(write(msgsock, buf2, 1024) < 0) {
 		perror("error writing on stream socket");
 		exit(1);
