@@ -165,7 +165,7 @@ char *argv[];
 		int len = sizeof fromaddr;
 		fd_set rmask;
 
-		//printf("Before timeout: %ld %ld\n", timeout.tv_sec, timeout.tv_usec);
+		printf("Before timeout: %ld %ld\n", timeout.tv_sec, timeout.tv_usec);
 
 		rmask = selectmask;
 		n = select(sock+1, &rmask, 0, 0, &timeout);

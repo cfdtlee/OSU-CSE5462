@@ -1,0 +1,10 @@
+There are 3 scource file is this lab.
+
+1. head.h The header file, include all necessary header file and defind some global variable
+2. ftpc.c The client, send file
+3. ftps.c The server, receive file.
+
+To run the program:
+Step 1, type make to compile the source files.
+Step 2, type ftps <local-port> to start the server
+Step 3, type ftpc <remote-IP> <remote-port> <local-file-to-transfer> to start the client and send the file.
