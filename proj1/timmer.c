@@ -32,8 +32,10 @@ void starttimer(double, int);
 void canceltimer(int);
 void print_time_list(TimeNode *head);
 void stop_timing();
+TimeNode *update_time_list(TimeNode *head);
 
 int pfds[2];
+time_t lasttime;
 
 int main(int argc, char *argv[])
 {
@@ -67,12 +69,12 @@ int main(int argc, char *argv[])
 		while(t--)
 		{
 			result = select(FD_SETSIZE, &inputs, (fd_set *)0, (fd_set *)0, &timeout);//&timeout); //
-			printf("%d\n", t);
+			// printf("%d\n", t);
+			head = update_time_list(head); //
 			switch(result)
 			{
 				case 0: 
 					printf("Timer: timeout\n");
-					// update_time_list(head, ); //
 					break;
 				case -1: 
 					perror("select"); 
@@ -86,7 +88,7 @@ int main(int argc, char *argv[])
 					// strncpy((char *)&id, bufin + OPT_SIZE, ID_SIZE); //ID
 					memcpy((char*)&time_interval, bufin + OPT_SIZE + ID_SIZE, sizeof(double));
 					// strncpy((char *)&time_interval, bufin + OPT_SIZE + ID_SIZE, sizeof(double)); //TIME
-					printf("operation: %s in %d time_interval: %lf", operation, id, time_interval); 
+					printf("New operation: %s id %d\n:", operation, id); 
 					
 					if (strcmp(operation, "stop") == 0)
 					{
@@ -124,6 +126,7 @@ int main(int argc, char *argv[])
 		// stop_timing();
 		
 		sleep(5);
+		printf("sleep 5 s\n");
 		starttimer(18.0,5);
 		canceltimer(4);
 		canceltimer(8);
@@ -149,6 +152,7 @@ void starttimer(double time_interval, int id)
 	strncpy(bufout + OPT_SIZE + ID_SIZE + sizeof(double), buf, INFO_SIZE);
 	write(pfds[1], bufout, BUFFER_SIZE);
 }
+
 void canceltimer(int id)
 {
 	char operation[OPT_SIZE] = "cancel";
@@ -159,6 +163,7 @@ void canceltimer(int id)
 	strncpy(bufout + OPT_SIZE, (char*) &id, ID_SIZE);
 	write(pfds[1], bufout, BUFFER_SIZE);
 }
+
 void stop_timing()
 {
 	char operation[OPT_SIZE] = "stop";
@@ -166,30 +171,32 @@ void stop_timing()
 	strncpy(bufout, operation, sizeof(operation));
 	write(pfds[1], bufout, BUFFER_SIZE);
 }
+
 TimeNode *add_timenode(TimeNode *head, int id, int dtime, int pnum, char * info)
 {
-	printf("head is %p\n", head);
+	// printf("head is %p\n", head);
 	TimeNode *node = head;
 	TimeNode *node_to_add = (TimeNode *)malloc(sizeof(TimeNode));
 	node_to_add->id = id;
 	node_to_add->delta_time = dtime;
 	node_to_add->port_num = pnum;
-	printf("node_to_add is :%p\n", &node_to_add);
+	// printf("node_to_add is :%p\n", &node_to_add);
 	// strcpy(node_to_add->info, info);
 	if (!node)
 	{
-		printf("add first node\n");
+		lasttime = time(NULL);
+		// printf("add first node\n");
 		node = node_to_add;
 		head = node_to_add;
-		printf("node_to_add is :%p\n", &node_to_add);
-		printf("head is %p\n", head);
+		// printf("node_to_add is :%p\n", &node_to_add);
+		// printf("head is %p\n", head);
 		return head;
 	}
 
 	// add at first position
 	if(node_to_add->delta_time <= node->delta_time)
 	{
-		printf("add at first\n");
+		// printf("add at first\n");
 		node_to_add->next = node;
 		node->forward = node_to_add;
 		head = node_to_add;
@@ -201,7 +208,7 @@ TimeNode *add_timenode(TimeNode *head, int id, int dtime, int pnum, char * info)
 	// find the insert point
 	while(node)
 	{
-		printf("finding position\n");
+		// printf("finding position\n");
 		if (!node->next && node_to_add->delta_time > node->delta_time)
 		{ // add at the end
 			node_to_add->delta_time -= node->delta_time;
@@ -230,7 +237,7 @@ TimeNode *add_timenode(TimeNode *head, int id, int dtime, int pnum, char * info)
 
 void print_time_list(TimeNode *head)
 {
-	printf("call add_timenode\n");
+	// printf("call add_timenode\n");
 	while(head)
 	{
 		printf("id: %d, delta_time: %d\n", head->id, head->delta_time);
@@ -267,7 +274,24 @@ TimeNode *delete_timenode(TimeNode *head, int id)
 	return head;
 	// while()
 }
-
+TimeNode *update_time_list(TimeNode *head)
+{
+	time_t now = time(NULL);
+	int dtime = now - lasttime;
+	printf("lasttime is %ld, dtime is %d\n", lasttime, dtime);
+	lasttime = now;
+	// TimeNode *node = head;
+	while(head && dtime >= head->delta_time)
+	{
+		dtime -= head->delta_time;
+		head = head->next; // how to destroy node that will not be used anymore?
+	}
+	if (head)
+	{
+		head->delta_time -= dtime;
+	}
+	return head;
+}
 void syserr(char* msg)
 {
 	fprintf(stderr, "%s: %s\n", strerror(errno), msg);
