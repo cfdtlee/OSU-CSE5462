@@ -1,0 +1,24 @@
+There are 4 source file and one head file.
+1. head.h 
+	header file, containing all the global variables and all other header files needed.
+2. lib.c
+	containing all the capital functions implementaion.
+3. tcpd.c
+	implement the tcp deamon program, the server side and client side version are both in this single file.
+4. ftpc.c
+	client, send file to server.
+5. ftps.c
+	server, receive file from client.
+
+To compile the program, just type make in command line.
+
+Although the arguments for ftpc and ftps are same as in Lab2, but actually the IP and port number for communication between those applications are hardcoded.
+
+Here are all the hardcoded port number and IP address
+ TCPDC_LOCAL_PORT 10002
+ TROLL_PORT 10003
+ TCPDS_REMOTE_PORT 10004
+ FTPS_PORT 10005
+ LOCALHOST "127.0.0.1"
+
+Test machine will be the localhost machine, i.e. all five applicaitons run on local machine.
