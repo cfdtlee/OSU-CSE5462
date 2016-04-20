@@ -10,7 +10,7 @@ def main():
 	pattern = re.compile(r'\d+.+seq\s\d+')
 	time = re.compile(r'\d+\.\d+')
 	seq = re.compile(r'\d+')
-	old_seq = 0
+	max_seq = 0
 	print len(lines)
 	# genereate retransmission.data and normal.data
 	# plot "normal.cwnd" using 1:2 title 'normal' with linespoints, "retransmission.cwnd" using 1:2 title 'retransmission' 
@@ -19,13 +19,13 @@ def main():
 		if len(res) == 1:
 			new_seq = int(seq.findall(res[0])[-1])
 			time_val = float(time.findall(res[0])[0])
-			if new_seq < old_seq:
+			if new_seq < max_seq:
 				# write into retransmission
 				fout_re.write(str(time_val) + " " +str(new_seq) + "\n")
 			else:
 				# write into normal
 				fout_no.write(str(time_val) + " " +str(new_seq) + "\n")
-			old_seq = new_seq
+			max_seq = max(new_seq, max_seq)
 	# generate slowstart.cwnd and congection_avoid.cwnd, 
 	# plot "congection_avoid.cwnd" using 1:2 title 'congection_avoid' with linespoints, "slowstart.cwnd" using 1:2 title 'slowstart'
 	fin_cwnd = open("myproj2.cwnd")
@@ -38,7 +38,7 @@ def main():
 		print line_cwnd
 		time_cwnd = nodes[0]
 		new_cwnd = int(nodes[1])
-		if new_cwnd == 2*old_cwnd or new_cwnd == 0:
+		if new_cwnd == 2*old_cwnd or old_cwnd == 0 or new_cwnd == 0 or old_cwnd == 536:
 			fout_sl_cwnd.write(time_cwnd + " " + str(new_cwnd) + "\n")
 		else:
 			fout_ca_cwnd.write(time_cwnd + " " + str(new_cwnd) + "\n")

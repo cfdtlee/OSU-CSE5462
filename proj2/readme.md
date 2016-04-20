@@ -1,5 +1,5 @@
 ## data generation
-run
+run 
 ```
 waf --run scrach/myproj2
 tcpdump -nn -tt -r tcp-large-transfer-0-0.pcap >> rawdata
@@ -12,8 +12,8 @@ you will get:
 - slowstart.cwnd
 - congection_avoid.cwnd
 
-## plot
+## plot  
 ```
-plot "normal.cwnd" using 1:2 title 'normal' with linespoints, "retransmission.cwnd" using 1:2 title 'retransmission' 
+plot "normal.data" using 1:2 title 'normal' with linespoints, "retransmission.data" using 1:2 title 'retransmission' 
 plot "congection_avoid.cwnd" using 1:2 title 'congection_avoid' with linespoints, "slowstart.cwnd" using 1:2 title 'slowstart'
 ```
