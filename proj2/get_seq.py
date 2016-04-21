@@ -37,8 +37,8 @@ def main():
 		nodes = line_cwnd.split("\t")
 		print line_cwnd
 		time_cwnd = nodes[0]
-		new_cwnd = int(nodes[1])
-		if new_cwnd == 2*old_cwnd or old_cwnd == 0 or new_cwnd == 0 or old_cwnd == 536:
+		new_cwnd = int(nodes[2])
+		if new_cwnd == 2*old_cwnd or new_cwnd == 0 or new_cwnd == 536:
 			fout_sl_cwnd.write(time_cwnd + " " + str(new_cwnd) + "\n")
 		else:
 			fout_ca_cwnd.write(time_cwnd + " " + str(new_cwnd) + "\n")

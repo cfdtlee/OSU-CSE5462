@@ -2,7 +2,7 @@
 run 
 ```
 waf --run scrach/myproj2
-tcpdump -nn -tt -r tcp-large-transfer-0-0.pcap >> rawdata
+tcpdump -nn -tt -r tcp-large-transfer-0-0.pcap > rawdata
 python get_seq.py
 ```
 you will get: 
